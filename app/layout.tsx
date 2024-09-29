@@ -1,5 +1,5 @@
 import { inter } from "./ui/fonts";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./ui/global.css";
 
 export default function RootLayout({
@@ -10,6 +10,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>{children}</body>
+      <SpeedInsights />
     </html>
   );
 }
