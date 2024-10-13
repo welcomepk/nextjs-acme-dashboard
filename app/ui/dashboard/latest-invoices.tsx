@@ -4,8 +4,28 @@ import Image from "next/image";
 import { lusitana } from "@/app/ui/fonts";
 import { fetchLatestInvoices } from "@/app/lib/data";
 
+// Type definition for the customer
+interface Customer {
+  _id: string; // UUID string for customer ID
+  name: string; // Customer name
+  email: string; // Customer email
+  image_url: string; // URL to customer's image
+}
+
+// Type definition for the invoice
+interface Invoice {
+  _id: string; // MongoDB ObjectId for invoice
+  customer_id: Customer; // Reference to the Customer object
+  amount: number; // Amount in the invoice
+  status: "paid" | "pending"; // Status of the invoice (enum)
+  date: string; // ISO Date string
+  createdAt: string; // ISO Date string for creation time
+  updatedAt: string; // ISO Date string for last update time
+  __v: number; // Version key (default in Mongoose)
+}
+
 export default async function LatestInvoices() {
-  let latestInvoices;
+  let latestInvoices: any;
   try {
     latestInvoices = await fetchLatestInvoices();
   } catch (error) {
@@ -27,10 +47,10 @@ export default async function LatestInvoices() {
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
         <div className="bg-white px-6">
-          {latestInvoices.map((invoice, i) => {
+          {latestInvoices.map((invoice: Invoice, i) => {
             return (
               <div
-                key={invoice.id}
+                key={invoice._id}
                 className={clsx(
                   "flex flex-row items-center justify-between py-4",
                   {
@@ -40,18 +60,18 @@ export default async function LatestInvoices() {
               >
                 <div className="flex items-center">
                   <Image
-                    src={invoice.image_url}
-                    alt={`${invoice.name}'s profile picture`}
+                    src={invoice.customer_id.image_url}
+                    alt={`${invoice.customer_id.name}'s profile picture`}
                     className="mr-4 rounded-full"
                     width={32}
                     height={32}
                   />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {invoice.name}
+                      {invoice.customer_id.name}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
-                      {invoice.email}
+                      {invoice.customer_id.email}
                     </p>
                   </div>
                 </div>
